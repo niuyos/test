@@ -107,18 +107,7 @@
       </Card>
     </div>
     <div class="md:flex">
-      <!-- <Card
-        :loading="loading"
-        size="small"
-        :title="'库存缓存'"
-        class="md:w-1/2 w-full !md:mt-0 !md !mt-5"
-        style="margin-right: 10px"
-      >
-        <template #extra>
-          <Tag color="green">日</Tag>
-        </template>
-      </Card> -->
-      <Card :loading="loading2" size="small" class="md:w-1/1 w-full !md:mt-0 !md !mt-5">
+      <Card :loading="loading2" size="small" class="md:w-2/5 w-full !md:mt-0 !md !mt-5">
         <template #title>
           <div>
             <div>
