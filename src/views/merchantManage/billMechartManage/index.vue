@@ -57,11 +57,12 @@
             <template v-if="column.dataIndex === 'creditOperation'">
               <a @click="creditOperationLog(record)">授信</a>
             </template>
-            <template v-if="column.dataIndex === 'status'">
+            <template v-if="column.dataIndex === 'statusFlag'">
               <a-switch
                 style="margin: 0 10px"
-                :checked="text ? false : true"
-                @change="changeDisabledFlag(record)"
+                :disabled="record.statusFlag === '3' ? true : false"
+                :checked="record.statusFlag === '1' ? true : false"
+                @change="(checked) => changeDisabledFlag(checked, record)"
               />
             </template>
 
@@ -283,7 +284,7 @@
 
 <script lang="ts" setup>
   import { BasicTable } from '/@/components/Table';
-  import { onMounted, reactive, ref, nextTick, createVNode } from 'vue';
+  import { reactive, ref, nextTick, createVNode } from 'vue';
   import { message, Modal } from 'ant-design-vue';
   import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
   import { merchantApi } from '/@/api/merchantManage/merchantApi';
@@ -301,7 +302,7 @@
     { title: '商户账号', dataIndex: 'account' },
     { title: '商户名称', dataIndex: 'nickName' },
     { title: '余额', dataIndex: 'balance' },
-    { title: '状态', dataIndex: 'status', align: 'center' },
+    { title: '状态', dataIndex: 'statusFlag', align: 'center' },
     { title: '授信', dataIndex: 'creditOperation', width: 100 },
     { title: '入驻时间', dataIndex: 'createTime', width: 150 },
     {
@@ -572,9 +573,15 @@
   }
 
   // 改变商户状态
-  async function changeDisabledFlag({ userId }) {
+  async function changeDisabledFlag(checked, { userId }) {
     try {
-      await merchantApi.modifyMerchant({ userId, type: 1 });
+      let statusFlags: string;
+      if (!checked) {
+        statusFlags = '2';
+      } else {
+        statusFlags = '1';
+      }
+      await merchantApi.merchantOpen({ userId, statusFlag: statusFlags });
       message.success('修改成功');
       reload();
     } catch (e) {
@@ -639,7 +646,7 @@
   }
   async function confirmDeleteMerchant({ userId }) {
     try {
-      // await merchantApi.merchantStatus({ userId, type: 2 });
+      await merchantApi.merchantDelete({ userId });
       message.success('操作成功');
       reload();
     } catch (e) {
@@ -653,19 +660,11 @@
     tableRef.value.reload({ page: 1 });
   };
 
-  function init() {
-    // tableRef.value.reload({ page: 1 });
-  }
-
   // 重置
   const reset = () => {
     where.account = '';
     reload();
   };
-
-  onMounted(async () => {
-    init();
-  });
 </script>
 
 <style></style>

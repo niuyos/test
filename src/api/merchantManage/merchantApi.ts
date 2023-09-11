@@ -5,7 +5,6 @@ export class merchantApi {
   static getMerchantList(params) {
     return defHttp.post({
       url: `/merchant/list?userType=${params.userType}&account=${params.account}`,
-      params,
     });
   }
   // 新增商户
@@ -23,5 +22,13 @@ export class merchantApi {
   //授信
   static awardCredit(params) {
     return defHttp.post({ url: '/merchant/credit', params });
+  }
+  //删除
+  static merchantDelete(params) {
+    return defHttp.post({ url: `/merchant/delete?userId=${params.userId}` });
+  }
+  //改变商户状态
+  static merchantOpen(params) {
+    return defHttp.post({ url: '/merchant/open', params });
   }
 }

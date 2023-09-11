@@ -24,6 +24,14 @@
         :placeholder="t('sys.login.password')"
       />
     </FormItem>
+    <FormItem name="verCode" class="enter-x">
+      <Input
+        size="large"
+        v-model:value="formData.verCode"
+        placeholder="请输入谷歌验证码"
+        class="fix-auto-fill"
+      />
+    </FormItem>
 
     <ARow class="enter-x">
       <ACol :span="12">
@@ -38,7 +46,14 @@
 
     <FormItem class="enter-x">
       <!-- 登录 -->
-      <Button type="primary" size="large" block @click="handleLogin" :loading="loading" :disabled="loading">
+      <Button
+        type="primary"
+        size="large"
+        block
+        @click="handleLogin"
+        :loading="loading"
+        :disabled="loading"
+      >
         {{ t('sys.login.loginButton') }}
       </Button>
       <!-- <Button size="large" class="mt-4 enter-x" block @click="handleRegister">
@@ -81,6 +96,7 @@
   const formData = reactive({
     account: '',
     password: '',
+    verCode: '',
     rememberMe: false,
   });
 
@@ -102,6 +118,7 @@
         password: data.password,
         account: data.account,
         rememberMe: formData.rememberMe,
+        verCode: data.verCode,
         mode: 'none', //不要默认的错误提示
       });
       if (userInfo) {
@@ -114,7 +131,8 @@
     } catch (error) {
       createErrorModal({
         title: t('sys.api.errorTip'),
-        content: (error.response.data as unknown as Error).message || t('sys.api.networkExceptionMsg'),
+        content:
+          (error.response.data as unknown as Error).message || t('sys.api.networkExceptionMsg'),
         getContainer: () => document.body.querySelector(`.${prefixCls}`) || document.body,
       });
     } finally {

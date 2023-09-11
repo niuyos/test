@@ -4,18 +4,34 @@
       <a-card :bordered="false">
         <a-form layout="inline" :model="where">
           <a-row>
-            <a-form-item label="核销账号:">
+            <a-form-item label="支付商户订单号:">
               <a-input
-                v-model:value.trim="where.merchantAccount"
-                placeholder="请输入核销账号"
+                v-model:value.trim="where.orderId"
+                placeholder="请输入支付商户订单号"
                 allow-clear
                 style="width: 160px"
               />
             </a-form-item>
-            <a-form-item label="核销话单订单号:">
+            <a-form-item label="手机号:">
               <a-input
-                v-model:value.trim="where.orderId"
-                placeholder="请输入核销话单订单号"
+                v-model:value.trim="where.phoneNumber"
+                placeholder="请输入手机号"
+                allow-clear
+                style="width: 160px"
+              />
+            </a-form-item>
+            <a-form-item label="通道编码:">
+              <a-input
+                v-model:value.trim="where.queryCode"
+                placeholder="请输入通道编码"
+                allow-clear
+                style="width: 160px"
+              />
+            </a-form-item>
+            <a-form-item label="话单订单号:">
+              <a-input
+                v-model:value.trim="where.phoneOrderId"
+                placeholder="请输入话单订单号"
                 allow-clear
                 style="width: 160px"
               />
@@ -35,7 +51,7 @@
         <BasicTable
           :canResize="false"
           ref="tableRef"
-          :api="FinancialManageApi.getCreditList"
+          :api="LogManagementaApi.getRechargeLogList"
           :where="where"
           :columns="columns"
           showTableSetting
@@ -53,12 +69,14 @@
 <script lang="ts" setup>
   import { BasicTable } from '/@/components/Table';
   import { reactive, ref } from 'vue';
-  import { FinancialManageApi } from '/@/api/financialManage/FinancialManageApi';
+  import { LogManagementaApi } from '/@/api/LogManagement/LogManagementaApi';
 
   // 搜索数据
   const where = reactive({
-    merchantAccount: '',
     orderId: '',
+    phoneNumber: '',
+    queryCode: '',
+    phoneOrderId: '',
   });
   //表格配置
   const columns = ref<object[]>([
@@ -78,8 +96,10 @@
 
   // 重置
   const reset = () => {
-    where.merchantAccount = '';
     where.orderId = '';
+    where.phoneNumber = '';
+    where.queryCode = '';
+    where.phoneOrderId = '';
     reload();
   };
 </script>
