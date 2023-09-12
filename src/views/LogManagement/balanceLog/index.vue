@@ -60,7 +60,13 @@
             type: 'checkbox',
           }"
           :scroll="{ x: 1300, y: 10000 }"
-        />
+        >
+          <template #bodyCell="{ text, column, record }">
+            <template v-if="column.dataIndex === 'payStatus'">
+              {{ text }}
+            </template>
+          </template>
+        </BasicTable>
       </a-card>
     </div>
   </div>
@@ -80,13 +86,13 @@
   });
   //表格配置
   const columns = ref<object[]>([
-    { title: '商户号', dataIndex: 'merchantNo' },
-    { title: '商户账号', dataIndex: 'account' },
-    { title: '商户名称', dataIndex: 'nickName' },
-    { title: '余额', dataIndex: 'balance' },
-    { title: '状态', dataIndex: 'statusFlag', align: 'center' },
-    { title: '授信', dataIndex: 'creditOperation', width: 100 },
-    { title: '入驻时间', dataIndex: 'createTime', width: 150 },
+    { title: '支付商户订单号', dataIndex: 'orderId' },
+    { title: '话单订单号', dataIndex: 'phoneOrderId' },
+    { title: '支付渠道号', dataIndex: 'payChannelSn' },
+    { title: '查询通道', dataIndex: 'queryCode' },
+    { title: '手机号', dataIndex: 'phoneNumber' },
+    { title: '余额', dataIndex: 'amount', align: 'center' },
+    { title: '状态', dataIndex: 'payStatus', width: 100 },
   ]);
   // 查询
   const tableRef = ref();

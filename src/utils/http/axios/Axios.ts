@@ -178,6 +178,9 @@ export class VAxios {
   get<T = any>(config: AxiosRequestConfig, options?: RequestOptions): Promise<T> {
     return this.request({ ...config, method: 'GET' }, options);
   }
+  getImg<T = any>(config: AxiosRequestConfig, options?: RequestOptions): Promise<T> {
+    return this.requestImg({ ...config, method: 'GET' }, options);
+  }
 
   post<T = any>(config: AxiosRequestConfig, options?: RequestOptions): Promise<T> {
     return this.request({ ...config, method: 'POST' }, options);
@@ -215,6 +218,52 @@ export class VAxios {
             try {
               const ret = transformResponseHook(res, opt);
               resolve(ret);
+            } catch (err) {
+              reject(err || new Error('request error!'));
+            }
+            return;
+          }
+          resolve(res as unknown as Promise<T>);
+        })
+        .catch((e: Error | AxiosError) => {
+          if (requestCatchHook && isFunction(requestCatchHook)) {
+            reject(requestCatchHook(e, opt));
+            return;
+          }
+          if (axios.isAxiosError(e)) {
+            // rewrite error message from axios in here
+          }
+          reject(e);
+        });
+    });
+  }
+
+  requestImg<T = any>(config: AxiosRequestConfig, options?: RequestOptions): Promise<T> {
+    let conf: CreateAxiosOptions = cloneDeep(config);
+    const transform = this.getTransform();
+
+    const { requestOptions } = this.options;
+
+    const opt: RequestOptions = Object.assign({}, requestOptions, options);
+
+    const { beforeRequestHook, requestCatchHook, transformResponseHook } = transform || {};
+    if (beforeRequestHook && isFunction(beforeRequestHook)) {
+      conf = beforeRequestHook(conf, opt);
+    }
+    conf.requestOptions = opt;
+
+    conf = this.supportFormData(conf);
+
+    return new Promise((resolve, reject) => {
+      this.axiosInstance
+        .request<any, AxiosResponse<Result>>(conf)
+        .then((res: AxiosResponse<Result>) => {
+          if (transformResponseHook && isFunction(transformResponseHook)) {
+            try {
+              console.log('返回的数据', res.data);
+              // const ret = window.URL.createObjectURL(res.data);
+              // const ret = transformResponseHook(res, opt);
+              resolve(res.data);
             } catch (err) {
               reject(err || new Error('request error!'));
             }

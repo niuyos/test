@@ -5,4 +5,8 @@ export class LogManagementaApi {
   static getRechargeLogList(params) {
     return defHttp.post({ url: `/rechargeLog/list`, params });
   }
+  // 获取系统费用
+  static getRechargeSystemList(params) {
+    return defHttp.post({ url: `/rechargeSystem/list`, params });
+  }
 }

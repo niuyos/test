@@ -26,12 +26,12 @@
         <MenuDivider />
         <!-- <MenuItem key="profile" :text="t('个人中心')" icon="ant-design:user-outlined" /> -->
         <!-- <MenuItem key="password" :text="t('修改密码')" icon="ant-design:key-outlined" /> -->
-        <MenuItem
+        <!-- <MenuItem
           v-if="getUseLockPage"
           key="lock"
           :text="t('layout.header.tooltipLock')"
           icon="ion:lock-closed-outline"
-        />
+        /> -->
         <MenuItem
           key="logout"
           :text="t('layout.header.dropdownItemLoginOut')"

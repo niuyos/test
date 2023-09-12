@@ -40,15 +40,19 @@
         :showText="false"
         :class="`${prefixCls}-action__item`"
       />
-
       <UserDropDown :theme="getHeaderTheme" />
+
+      <div :class="`${prefixCls}-action__item`" @click="getBlance">
+        <transaction-outlined />
+        <span>{{ blance }} 元</span>
+      </div>
 
       <SettingDrawer v-if="getShowSetting" :class="`${prefixCls}-action__item`" />
     </div>
   </Header>
 </template>
 <script lang="ts">
-  import { defineComponent, unref, computed, onMounted } from 'vue';
+  import { defineComponent, unref, computed, onMounted, ref } from 'vue';
 
   import { propTypes } from '/@/utils/propTypes';
 
@@ -78,6 +82,8 @@
   import { useNoticeStore } from '/@/store/modules/notice';
   import { useUserStore } from '/@/store/modules/user';
   import { getToken } from '/@/utils/auth';
+  import { blanceApi } from '/@/api/blance/blance';
+  import { message } from 'ant-design-vue';
 
   export default defineComponent({
     name: 'LayoutHeader',
@@ -178,6 +184,17 @@
         window.open(GUNS_DEVOPS_URL + getToken());
       };
 
+      let blance = ref(0);
+      let isFirst = ref(true);
+      const getBlance = async () => {
+        let result = await blanceApi.getRechargeSystemBalance({});
+        if (isFirst.value === false) {
+          message.success('余额刷新成功');
+        }
+        isFirst.value = false;
+        blance.value = result;
+      };
+
       onMounted(async () => {
         // 注册消息通知的websocket
         try {
@@ -187,12 +204,15 @@
               noticeStore.addNotice(result.data);
             }
           });
+          getBlance();
         } catch (e) {
           console.error(e);
         }
       });
 
       return {
+        blance,
+        getBlance,
         jumpGuns,
         prefixCls,
         getHeaderClass,
